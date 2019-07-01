@@ -4,13 +4,25 @@ import Navbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTruck } from "@fortawesome/free-solid-svg-icons";
+import { dateDisplay, dateKey, dateSequence } from "./Date";
 
-function Date(props) {
+function DateDropdown(props) {
   return (
     <Navbar.Collapse className="justify-content-end">
-      <Navbar.Text className="d-none d-sm-block">
-        {props.date}
-      </Navbar.Text>
+      <Nav className="d-none d-sm-block">
+        <NavDropdown alignRight title={dateDisplay(props.selectedDate)}>
+          {dateSequence(props.startDate).map(date => {
+            return (
+              <NavDropdown.Item
+                key={dateKey(date)}
+                eventKey={dateKey(date)}
+                onClick={() => {props.setDate(date)}}>
+                {dateDisplay(date)}
+              </NavDropdown.Item>
+            );
+          })}
+        </NavDropdown>
+      </Nav>
     </Navbar.Collapse>
   );
 }
@@ -42,7 +54,11 @@ function Header(props) {
         <FontAwesomeIcon icon={faTruck} color="#a569bd"/>
         {" Food Trucks of DC "}
       </Navbar.Brand>
-      <Date date={props.date} />
+      <DateDropdown
+        startDate={props.startDate}
+        selectedDate={props.selectedDate}
+        setDate={props.setDate}
+      />
       <OptionalStopDropdown data={props.data} />
     </Navbar>
   );
