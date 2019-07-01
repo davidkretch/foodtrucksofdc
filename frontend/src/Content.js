@@ -11,9 +11,9 @@ function Stops(props) {
             <Card className="mt-4 mb-4">
               <Card.Header as="h5">{stop.name}</Card.Header>
               <ListGroup variant="flush">
-                {stop.trucks.map(truck => {
+                {stop.trucks.map((truck, index) => {
                   return (
-                    <ListGroup.Item key={truck}>{truck}</ListGroup.Item>
+                    <ListGroup.Item key={index}>{truck}</ListGroup.Item>
                   )
                 })}
               </ListGroup>
