@@ -6,7 +6,7 @@ function Sidebar(props) {
     return (
         <Navbar className="d-none d-sm-block mt-1" style={{position: "fixed"}}>
             <Nav className="mr-auto flex-sm-column">
-                {props.data.map(stop => {
+                {props.stops.map(stop => {
                     return (
                         <Nav.Link href={"#" + stop.link} key={stop.link}>{stop.abbrev}</Nav.Link>
                     );

@@ -31,7 +31,7 @@ function StopDropdown(props) {
   return (
     <Nav className="d-block d-sm-none">
       <NavDropdown alignRight title="Stops">
-        {props.data.map(stop => {
+        {props.stops.map(stop => {
           return (
             <NavDropdown.Item href={"#" + stop.link} key={stop.link}>{stop.abbrev}</NavDropdown.Item>
           );
@@ -43,7 +43,7 @@ function StopDropdown(props) {
 
 function OptionalStopDropdown(props) {
   return (
-    props.data.length > 0 ? <StopDropdown data={props.data} /> : <div />
+    props.stops.length > 0 ? <StopDropdown stops={props.stops} /> : <div />
   );
 }
 
@@ -59,7 +59,7 @@ function Header(props) {
         selectedDate={props.selectedDate}
         setDate={props.setDate}
       />
-      <OptionalStopDropdown data={props.data} />
+      <OptionalStopDropdown stops={props.stops} />
     </Navbar>
   );
 }
