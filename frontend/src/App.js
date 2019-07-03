@@ -14,8 +14,9 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      data: [],
+      stops: [],
       date: date
+      
     };
   }
 
@@ -24,7 +25,7 @@ class App extends React.Component {
     firebase.auth().signInAnonymously()
     .then(() => getData(dateKey(this.state.date)))
     .then(data => processData(data))
-    .then(data => this.setState({data: data}))
+    .then(data => this.setState({stops: data}))
     .catch(error => console.log(error));
   }
 
@@ -32,7 +33,7 @@ class App extends React.Component {
   componentDidUpdate() {
     getData(dateKey(this.state.date))
     .then(data => processData(data))
-    .then(data => this.setState({data: data}))
+    .then(data => this.setState({stops: data}))
     .catch(error => console.log(error));
   }
   
@@ -40,14 +41,14 @@ class App extends React.Component {
     return (
       <div className="App">
       <Header
-        data={this.state.data}
+        stops={this.state.stops}
         startDate={date}
         selectedDate={this.state.date}
         setDate={(date) => this.setState({date: date})}
       />
       <Layout
-        left={<Sidebar data={this.state.data} />}
-        middle={<Content data={this.state.data} />}
+        left={<Sidebar stops={this.state.stops} />}
+        middle={<Content stops={this.state.stops} />}
       />
       </div>
       )

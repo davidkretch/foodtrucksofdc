@@ -5,7 +5,7 @@ import Jumbotron from "react-bootstrap/Jumbotron"
 
 function Stops(props) {
   return (
-    props.data.map(stop => {
+    props.stops.map(stop => {
         return (
           <div id={stop.link} style={{paddingTop: "56px", marginTop: "-56px"}} key={stop.name}>
             <Card className="mt-4 mb-4">
@@ -33,7 +33,7 @@ function NoData() {
 }
 
 function Content(props) {
-  return (props.data.length > 0 ? <Stops data={props.data} /> : <NoData />);
+  return (props.stops.length > 0 ? <Stops stops={props.stops} /> : <NoData />);
 }
 
 export default Content;
