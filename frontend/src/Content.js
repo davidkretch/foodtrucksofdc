@@ -27,7 +27,7 @@ function Stops(props) {
 function NoData() {
   return (
     <Jumbotron style={{background: "none"}}>
-      <h5 style={{textAlign: "center"}}>Sorry, no trucks today!</h5>
+      <h5 style={{textAlign: "center"}}>Sorry, we don't have any info!</h5>
     </Jumbotron>
   );
 }
