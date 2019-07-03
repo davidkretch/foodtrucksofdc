@@ -8,6 +8,7 @@ import (
 	"io"
 	"io/ioutil"
 	"path/filepath"
+	"regexp"
 	"strconv"
 	"strings"
 	"time"
@@ -34,12 +35,17 @@ var months = map[string]int{
 // GetMonthAndYear returns the month and year from a string
 // of the form "Jan 2006...".
 func GetMonthAndYear(s string) (time.Month, int, error) {
-	el := strings.Split(s, " ")
-	month, ok := months[strings.ToLower(el[0][0:3])]
+	re := regexp.MustCompile(`^(.+) ?(\d{4})`)
+	matches := re.FindStringSubmatch(s)
+	if len(matches) != 3 {
+		return time.Month(0), 0, errors.New("Invalid string")
+	}
+	m, y := matches[1], matches[2]
+	month, ok := months[strings.ToLower(m[0:3])]
 	if !ok {
 		return 0, 0, errors.New("Cannot convert month to int")
 	}
-	year, err := strconv.Atoi(el[1])
+	year, err := strconv.Atoi(y)
 	if err != nil {
 		return 0, 0, errors.New("Cannot convert year to int")
 	}
@@ -88,11 +94,29 @@ func ReadCSV(data io.Reader) ([]map[string]string, error) {
 	return records, nil
 }
 
+// CheckData returns whether the data has the expected columns.
+func CheckData(data []map[string]string) bool {
+	rec := data[0]
+	expected := []string{"Business Name"}
+	for d := time.Monday; d <= time.Friday; d++ {
+		expected = append(expected, d.String())
+	}
+	for _, col := range expected {
+		if _, ok := rec[col]; !ok {
+			return false
+		}
+	}
+	return true
+}
+
 // ProcessData returns a nested map with:
 // Each day of a given month
 //   -> The stops being served
 //      -> Which trucks serve the stop on the given day
 func ProcessData(data []map[string]string, month time.Month, year int) (map[string]map[string][]string, error) {
+	if ok := CheckData(data); !ok {
+		return nil, errors.New("Data in wrong format")
+	}
 	days := make(map[string]map[string][]string)
 	for d := time.Sunday; d <= time.Saturday; d++ {
 		day := d.String()
@@ -124,20 +148,30 @@ func ProcessData(data []map[string]string, month time.Month, year int) (map[stri
 	return dates, nil
 }
 
-// UploadData uploads a dataset to the database.
-func UploadData(data map[string]map[string][]string, project string) error {
+// UploadData uploads a dataset to the database,
+// and marks the file done.
+func UploadData(data map[string]map[string][]string, project string, file string) error {
 	ctx := context.Background()
 	client, err := firestore.NewClient(ctx, project)
 	if err != nil {
 		return err
 	}
 	defer client.Close()
-	coll := client.Collection("dates")
+	batch := client.Batch()
+
+	dates := client.Collection("dates")
 	for date, stops := range data {
-		_, err := coll.Doc(date).Set(ctx, stops)
-		if err != nil {
-			return err
-		}
+		dateRef := dates.Doc(date)
+		batch.Set(dateRef, stops)
+	}
+
+	files := client.Collection("dcgov_files")
+	fileRef := files.Doc(file)
+	batch.Set(fileRef, map[string]bool{"ok": true})
+
+	_, err = batch.Commit(ctx)
+	if err != nil {
+		return err
 	}
 	return nil
 }
@@ -164,7 +198,7 @@ func LoadDB(name string, bucket string, project string) error {
 	if err != nil {
 		return err
 	}
-	err = UploadData(processed, project)
+	err = UploadData(processed, project, name)
 	if err != nil {
 		return err
 	}
