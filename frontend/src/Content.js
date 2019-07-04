@@ -24,16 +24,16 @@ function Stops(props) {
   );
 }
 
-function NoData() {
+function NoData(props) {
   return (
     <Jumbotron style={{background: "none"}}>
-      <h5 style={{textAlign: "center"}}>Sorry, we don't have any info!</h5>
+      <h5 style={{textAlign: "center"}}>{props.status}</h5>
     </Jumbotron>
   );
 }
 
 function Content(props) {
-  return (props.stops.length > 0 ? <Stops stops={props.stops} /> : <NoData />);
+  return (props.stops.length > 0 ? <Stops stops={props.stops} /> : <NoData status={props.status}/>);
 }
 
 export default Content;
