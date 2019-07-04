@@ -158,17 +158,11 @@ func UploadData(data map[string]map[string][]string, project string, file string
 	}
 	defer client.Close()
 	batch := client.Batch()
-
 	dates := client.Collection("dates")
 	for date, stops := range data {
 		dateRef := dates.Doc(date)
 		batch.Set(dateRef, stops)
 	}
-
-	files := client.Collection("dcgov_files")
-	fileRef := files.Doc(file)
-	batch.Set(fileRef, map[string]bool{"ok": true})
-
 	_, err = batch.Commit(ctx)
 	if err != nil {
 		return err
@@ -176,9 +170,30 @@ func UploadData(data map[string]map[string][]string, project string, file string
 	return nil
 }
 
+// SetFileStatus sets a file ok or not ok in the database,
+// based on whether there is an error.
+func SetFileStatus(file string, project string, status error) error {
+	ctx := context.Background()
+	client, err := firestore.NewClient(ctx, project)
+	if err != nil {
+		return err
+	}
+	defer client.Close()
+	fileRef := client.Collection("dcgov_files").Doc(file)
+	ok := true
+	if status != nil {
+		ok = false
+	}
+	fileRef.Set(ctx, map[string]bool{"ok": ok})
+	return nil
+}
+
 // LoadDB extracts a month's data from a CSV, transforms it into one
 // observation per day, and then loads it into the database.
-func LoadDB(name string, bucket string, project string) error {
+func LoadDB(name string, bucket string, project string) (err error) {
+	defer func() {
+		SetFileStatus(name, project, err)
+	}()
 	if ext := filepath.Ext(name); ext != ".csv" {
 		return nil
 	}
