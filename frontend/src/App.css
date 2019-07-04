@@ -1,0 +1,4 @@
+/* Always show a scrollbar to avoid layout changes on days with no trucks. */
+body {
+    overflow-y: scroll;
+}
