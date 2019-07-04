@@ -5,9 +5,12 @@ import Header from "./Header";
 import Layout from "./Layout";
 import Sidebar from "./Sidebar";
 
+import "./App.css";
+
 import { dateKey } from "./date";
 import { firebase, getData, processData } from "./firebase";
-import { status, statusError } from "./status"
+import { status, statusError } from "./status";
+
 
 // TODO: Make a variable for fixed navbar height.
 const date = new Date();
