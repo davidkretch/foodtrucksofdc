@@ -4,7 +4,7 @@ import Navbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTruck } from "@fortawesome/free-solid-svg-icons";
-import { dateDisplay, dateKey, dateSequence } from "./Date";
+import { dateDisplay, dateKey, dateSequence } from "./date";
 
 function DateDropdown(props) {
   return (
