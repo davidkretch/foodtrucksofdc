@@ -22,22 +22,21 @@ class App extends React.Component {
     };
   }
 
-  // TODO: Put data fetch in a single location.
-  componentDidMount() {
-    firebase.auth().signInAnonymously()
-    .then(() => getData(dateKey(this.state.date)))
+  fetch() {
+    getData(dateKey(this.state.date))
     .then(data => processData(data))
     .then(data => this.setState({stops: data, status: status(data)}))
-    .catch(error => this.setState({status: statusError()}));
+    .catch(() => this.setState({status: statusError()}));
   }
 
-  // TODO: Put data fetch in a single location.
+  componentDidMount() {
+    firebase.auth().signInAnonymously()
+    .then(() => this.fetch());
+  }
+
   componentDidUpdate(prepProps, prevState) {
     if (this.state.date !== prevState.date) {
-      getData(dateKey(this.state.date))
-      .then(data => processData(data))
-      .then(data => this.setState({stops: data, status: status(data)}))
-      .catch(error => this.setState({status: statusError()}));  
+      this.fetch();
     }
   }
   
