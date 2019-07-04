@@ -125,6 +125,9 @@ func ProcessData(data []map[string]string, month time.Month, year int) (map[stri
 	}
 	for _, rec := range data {
 		truck := rec["Business Name"]
+		if truck == "" {
+			continue
+		}
 		for d := time.Sunday; d <= time.Saturday; d++ {
 			day := d.String()
 			if stop, ok := rec[day]; ok {
