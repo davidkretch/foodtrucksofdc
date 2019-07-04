@@ -6,6 +6,7 @@ import Layout from "./Layout";
 import Content from "./Content";
 import Sidebar from "./Sidebar";
 import { dateKey } from "./Date";
+import { status, statusError } from "./Status"
 
 // TODO: Make a variable for fixed navbar height.
 const date = new Date();
@@ -15,8 +16,8 @@ class App extends React.Component {
     super(props);
     this.state = {
       stops: [],
-      date: date
-      
+      date: date,
+      status: "Loading..."
     };
   }
 
@@ -25,16 +26,16 @@ class App extends React.Component {
     firebase.auth().signInAnonymously()
     .then(() => getData(dateKey(this.state.date)))
     .then(data => processData(data))
-    .then(data => this.setState({stops: data}))
-    .catch(error => console.log(error));
+    .then(data => this.setState({stops: data, status: status(data)}))
+    .catch(error => this.setState({status: statusError()}));
   }
 
   // TODO: Put data fetch in a single location.
   componentDidUpdate() {
     getData(dateKey(this.state.date))
     .then(data => processData(data))
-    .then(data => this.setState({stops: data}))
-    .catch(error => console.log(error));
+    .then(data => this.setState({stops: data, status: status(data)}))
+    .catch(error => this.setState({status: statusError()}));
   }
   
   render() {
@@ -48,7 +49,7 @@ class App extends React.Component {
       />
       <Layout
         left={<Sidebar stops={this.state.stops} />}
-        middle={<Content stops={this.state.stops} />}
+        middle={<Content stops={this.state.stops} status={this.state.status} />}
       />
       </div>
       )
