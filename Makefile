@@ -43,7 +43,7 @@ get_pdfs_cron:
 	-${SHELL} gcloud pubsub topics create get-pdfs
 	-${SHELL} gcloud scheduler jobs delete get-pdfs --quiet
 	-${SHELL} gcloud scheduler jobs create pubsub get-pdfs \
-	--schedule="0 0 * * *" \
+	--schedule="0 * * * *" \
 	--topic=get-pdfs \
 	--message-body="{}" \
 	--time-zone=America/New_York
@@ -56,7 +56,7 @@ get_pdfs: buckets get_pdfs_cron
 	--source=backend/dcgov/get_pdfs \
 	--stage-bucket=${BUCKET_CLOUD_FUNCTIONS} \
 	--timeout=300 \
-	--set-env-vars=URL=${DC_GOV_URL},BUCKET=${BUCKET_OBJECTS} \
+	--set-env-vars=URL=${DC_GOV_URL},BUCKET=${BUCKET_OBJECTS},PROJECT=${PROJECT} \
 	--trigger-topic=get-pdfs
 
 convert_pdfs: buckets
