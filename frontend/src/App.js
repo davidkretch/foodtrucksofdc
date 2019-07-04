@@ -1,12 +1,13 @@
 import React from "react";
 
-import { firebase, getData, processData } from "./Firebase";
+import Content from "./Content";
 import Header from "./Header";
 import Layout from "./Layout";
-import Content from "./Content";
 import Sidebar from "./Sidebar";
-import { dateKey } from "./Date";
-import { status, statusError } from "./Status"
+
+import { dateKey } from "./date";
+import { firebase, getData, processData } from "./firebase";
+import { status, statusError } from "./status"
 
 // TODO: Make a variable for fixed navbar height.
 const date = new Date();

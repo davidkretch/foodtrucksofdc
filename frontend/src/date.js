@@ -17,7 +17,7 @@ function dateKey(date) {
     return `${year}-${month}-${day}`;
 }
 
-// dateSequence generates a sequence of dates starting with the given date.
+// dateSequence returns a sequence of dates starting with the given date.
 function dateSequence(date) {
     var result = new Array(7);
     for (var i = 0; i < result.length; i++) {
