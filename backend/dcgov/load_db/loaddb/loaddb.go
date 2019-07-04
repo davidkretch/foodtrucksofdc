@@ -180,7 +180,7 @@ func SetFileStatus(name string, project string, status error) error {
 		return err
 	}
 	defer client.Close()
-	fileNoExt := strings.Trim(name, path.Ext(name))
+	fileNoExt := strings.TrimSuffix(name, path.Ext(name))
 	fileRef := client.Collection("dcgov_files").Doc(fileNoExt)
 	ok := true
 	if status != nil {
