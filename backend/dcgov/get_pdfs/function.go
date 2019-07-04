@@ -18,6 +18,7 @@ type PubSubMessage struct {
 func GetPDFs(ctx context.Context, m PubSubMessage) error {
 	url := os.Getenv("URL")
 	bucket := os.Getenv("BUCKET")
-	err := getpdfs.GetPDFs(url, bucket)
+	project := os.Getenv("PROJECT")
+	err := getpdfs.GetPDFs(url, bucket, project)
 	return err
 }

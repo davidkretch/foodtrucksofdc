@@ -11,6 +11,7 @@ import (
 	"strings"
 	"time"
 
+	"cloud.google.com/go/firestore"
 	"cloud.google.com/go/storage"
 	"golang.org/x/net/html"
 )
@@ -95,34 +96,34 @@ func Filter(l []Link, f func(Link) bool) []Link {
 	return (r)
 }
 
-// ExistsInBucket returns whether a file with the given name exists in the
-// given Google Cloud Storage bucket.
-func ExistsInBucket(name string, bucket string) (bool, error) {
-
+// AlreadyProcessed returns whether a file with the given name, not including
+// file extension, has been successfully processed.
+func AlreadyProcessed(name string, project string) (bool, error) {
 	ctx := context.Background()
-
-	client, err := storage.NewClient(ctx)
+	client, err := firestore.NewClient(ctx, project)
 	if err != nil {
 		return false, err
 	}
-	obj := client.Bucket(bucket).Object(name)
-
-	_, err = obj.Attrs(ctx)
+	defer client.Close()
+	fileNoExt := strings.Trim(name, path.Ext(name))
+	fileRef := client.Collection("dcgov_files").Doc(fileNoExt)
+	snap, err := fileRef.Get(ctx)
+	if !snap.Exists() {
+		return false, nil
+	}
 	if err != nil {
-		if err == storage.ErrObjectNotExist {
-			return false, nil
-		}
 		return false, err
 	}
-
-	return true, nil
+	data := snap.Data()
+	if ok, _ := data["ok"]; ok == "true" {
+		return true, nil
+	}
+	return false, nil
 }
 
 // SaveToBucket saves the contents of file to the given bucket.
 func SaveToBucket(file io.Reader, name string, bucket string) error {
-
 	ctx := context.Background()
-
 	client, err := storage.NewClient(ctx)
 	if err != nil {
 		return err
@@ -134,12 +135,11 @@ func SaveToBucket(file io.Reader, name string, bucket string) error {
 	if err := wc.Close(); err != nil {
 		return err
 	}
-
 	return nil
 }
 
 // GetPDFs saves all PDFs linked to from the given URL in Google Cloud Storage.
-func GetPDFs(u string, bucket string) error {
+func GetPDFs(u string, bucket string, project string) error {
 	resp, err := GetURL(u)
 	if err != nil {
 		log.Fatal(err)
@@ -153,7 +153,7 @@ func GetPDFs(u string, bucket string) error {
 
 	for _, link := range pdfs {
 		name, _ := url.PathUnescape(path.Base(link.URL))
-		if exists, _ := ExistsInBucket(name, bucket); !exists {
+		if processed, _ := AlreadyProcessed(name, project); !processed {
 			log.Printf("Fetching %s", name)
 
 			file, err := GetURL(link.URL)

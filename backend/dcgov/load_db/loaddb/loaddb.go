@@ -7,6 +7,7 @@ import (
 	"errors"
 	"io"
 	"io/ioutil"
+	"path"
 	"path/filepath"
 	"regexp"
 	"strconv"
@@ -172,14 +173,15 @@ func UploadData(data map[string]map[string][]string, project string, file string
 
 // SetFileStatus sets a file ok or not ok in the database,
 // based on whether there is an error.
-func SetFileStatus(file string, project string, status error) error {
+func SetFileStatus(name string, project string, status error) error {
 	ctx := context.Background()
 	client, err := firestore.NewClient(ctx, project)
 	if err != nil {
 		return err
 	}
 	defer client.Close()
-	fileRef := client.Collection("dcgov_files").Doc(file)
+	fileNoExt := strings.Trim(name, path.Ext(name))
+	fileRef := client.Collection("dcgov_files").Doc(fileNoExt)
 	ok := true
 	if status != nil {
 		ok = false
