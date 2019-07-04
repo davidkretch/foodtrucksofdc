@@ -10,11 +10,12 @@ to draw the page based on the fetched data.
 
 ### Firebase credentials
 
-The frontend requires a Firebase config in `frontend/src/FirebaseConfig.js`.
+The frontend requires a Firebase config in `frontend/src/firebaseConfig.js`.
 
-### Firebase credential API requirements
+### Credential API requirements
 
-Firebase uses an API key which must have access to the following APIs:
+The frontend uses a Google Cloud API key which must have access to the
+following APIs:
 
 * Cloud Firestore API
 * Identity Toolkit API
@@ -23,6 +24,7 @@ Firebase uses an API key which must have access to the following APIs:
 ## Backend
 
 The backend:
+
 1. Checks the [DC food truck lottery results](https://dcra.dc.gov/mrv).
 2. Downloads any new PDFs to Cloud Storage.
 3. Converts them to CSV.
