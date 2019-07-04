@@ -32,11 +32,13 @@ class App extends React.Component {
   }
 
   // TODO: Put data fetch in a single location.
-  componentDidUpdate() {
-    getData(dateKey(this.state.date))
-    .then(data => processData(data))
-    .then(data => this.setState({stops: data, status: status(data)}))
-    .catch(error => this.setState({status: statusError()}));
+  componentDidUpdate(prepProps, prevState) {
+    if (this.state.date !== prevState.date) {
+      getData(dateKey(this.state.date))
+      .then(data => processData(data))
+      .then(data => this.setState({stops: data, status: status(data)}))
+      .catch(error => this.setState({status: statusError()}));  
+    }
   }
   
   render() {
