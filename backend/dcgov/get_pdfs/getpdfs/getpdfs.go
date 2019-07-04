@@ -105,7 +105,7 @@ func AlreadyProcessed(name string, project string) (bool, error) {
 		return false, err
 	}
 	defer client.Close()
-	fileNoExt := strings.Trim(name, path.Ext(name))
+	fileNoExt := strings.TrimSuffix(name, path.Ext(name))
 	fileRef := client.Collection("dcgov_files").Doc(fileNoExt)
 	snap, err := fileRef.Get(ctx)
 	if !snap.Exists() {
@@ -115,7 +115,7 @@ func AlreadyProcessed(name string, project string) (bool, error) {
 		return false, err
 	}
 	data := snap.Data()
-	if ok, _ := data["ok"]; ok == "true" {
+	if ok, _ := data["ok"]; ok == true {
 		return true, nil
 	}
 	return false, nil
