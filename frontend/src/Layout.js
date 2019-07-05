@@ -8,10 +8,10 @@ function Layout(props) {
     return (
         <Container className="container-fluid m-0" style={{paddingTop: "56px"}}>
           <Row>
-            <Col xs={12} md={3} xl={2}>
+            <Col xs={12} sm={4} md={3} xl={2}>
                 {props.left}
             </Col>
-            <Col xs={12} md={9} xl={8}>
+            <Col xs={12} sm={8} md={6} xl={5}>
                 {props.middle}
             </Col>
             <Col xl={2}>
