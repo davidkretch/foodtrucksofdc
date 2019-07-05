@@ -6,5 +6,9 @@ service cloud.firestore {
     match /trucks/{truck} {
       allow read: if request.auth != null;
     }
+    match /ratings/{truck}/ratings/{userId} {
+      allow read, update: if request.auth.uid == userId;
+      allow create: if request.auth.uid != null;
+    }
   }
 }

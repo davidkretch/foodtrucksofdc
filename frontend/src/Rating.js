@@ -60,9 +60,9 @@ class Rating extends React.Component {
         }
     }
 
-    highlight(i) {
+    highlight(stars) {
         this.setState({
-            highlighted: i
+            highlighted: stars
         });
     }
 
@@ -72,10 +72,11 @@ class Rating extends React.Component {
         });
     }
 
-    rate(i) {
+    rate(stars) {
         this.setState({
-            selected: i
+            selected: stars
         });
+        this.props.setRating(stars);
     }
 
     render() {

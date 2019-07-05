@@ -78,7 +78,23 @@ function getData(date) {
     });
 }
 
+// setRating sets a user's rating for a specific truck. If the user has
+// already rated the truck before, their rating will be updated.
+function setRating(truck, rating) {
+    const userId = firebase.auth().currentUser.uid;
+    return firebase.firestore()
+    .collection("ratings")
+    .doc(truck)
+    .collection("ratings")
+    .doc(userId)
+    .set({
+        rating: rating,
+        datetime: firebase.firestore.FieldValue.serverTimestamp()
+    });
+}
+
 export {
     firebase,
-    getData
+    getData,
+    setRating
 };

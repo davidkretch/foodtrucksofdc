@@ -8,7 +8,7 @@ import Sidebar from "./Sidebar";
 import "./App.css";
 
 import { dateKey } from "./date";
-import { firebase, getData } from "./firebase";
+import { firebase, getData, setRating } from "./firebase";
 import { status, statusError } from "./status";
 
 
@@ -56,7 +56,7 @@ class App extends React.Component {
       />
       <Layout
         left={<Sidebar stops={this.state.stops} />}
-        middle={<Content stops={this.state.stops} status={this.state.status} />}
+        middle={<Content stops={this.state.stops} status={this.state.status} setRating={setRating} />}
       />
       </div>
       )
