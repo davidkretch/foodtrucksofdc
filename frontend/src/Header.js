@@ -6,6 +6,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTruck } from "@fortawesome/free-solid-svg-icons";
 import { dateDisplay, dateKey, dateSequence } from "./date";
 
+// DateDropdown renders a dropdown for selecting which date's food truck
+// schedule the user would like to see.
 function DateDropdown(props) {
   return (
     <Navbar.Collapse className="justify-content-end">
@@ -27,6 +29,7 @@ function DateDropdown(props) {
   );
 }
 
+// StopDropdown renders a dropdown for selecting which stop to jump to.
 function StopDropdown(props) {
   return (
     <Nav className="d-block d-sm-none">
@@ -41,12 +44,15 @@ function StopDropdown(props) {
   );
 }
 
+// OptionalStopDropdown renders the stop dropdown, or nothing if there are
+// no trucks.
 function OptionalStopDropdown(props) {
   return (
     props.stops.length > 0 ? <StopDropdown stops={props.stops} /> : <div />
   );
 }
 
+// Header renders the header at the top of the page.
 function Header(props) {
   return (
     <Navbar fixed="top" bg="dark" variant="dark">
