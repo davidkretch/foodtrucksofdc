@@ -11,9 +11,9 @@ function dateKey(date) {
     const d = new Date(date);
     const year = d.getFullYear();
     var month = d.getMonth() + 1;
-    month = month < 10 ? '0' + month : month;
+    month = month < 10 ? "0" + month : month;
     var day = d.getDate();
-    day = day < 10 ? '0' + day : day;
+    day = day < 10 ? "0" + day : day;
     return `${year}-${month}-${day}`;
 }
 
