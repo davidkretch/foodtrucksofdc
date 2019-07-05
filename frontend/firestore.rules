@@ -3,5 +3,8 @@ service cloud.firestore {
     match /dates/{date} {
       allow get: if request.auth != null;
     }
+    match /trucks/{truck} {
+      allow read: if request.auth != null;
+    }
   }
 }
