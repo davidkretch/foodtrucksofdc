@@ -18,33 +18,67 @@ function linkName(name) {
 }
 
 // getData returns a promise with the stop data for a given date.
-function getData(date) {
+function getStops(date) {
     return firebase.firestore()
     .collection("dates")
     .doc(date)
-    .get();
+    .get()
+    .then(doc => {
+        if (doc.exists) {
+            const data = doc.data();
+            const stops = Object.keys(data).map(key => {
+                return {
+                    "name": key,
+                    "abbrev": shortName(key),
+                    "link": linkName(key),
+                    "trucks": data[key]
+                }
+            })
+            return stops;
+        }
+        return [];
+    })
 }
 
-// processData returns an array of stops, each with their trucks.
-// The array is built from the data returned by getData.
-function processData(doc) {
-    if (doc.exists) {
-        const data = doc.data();
-        const arr = Object.keys(data).map(key => {
-            return {
-                "name": key,
-                "abbrev": shortName(key),
-                "link": linkName(key),
-                "trucks": data[key]
-            }
-        })
-        return arr;
-    }
-    return [];
+// getTrucks returns a promise with data on each truck (e.g. rating).
+function getTrucks() {
+    return firebase.firestore()
+    .collection("trucks")
+    .get()
+    .then(query => {
+        if (!query.empty) {
+            var trucks = {};
+            query.forEach(doc => {
+                trucks[doc.id] = doc.data();
+            });
+            return trucks;
+        }
+        return {};
+    })
+}
+
+// getData returns all stops for a given day, with data about each truck
+// (e.g. rating) merged onto it.
+function getData(date) {
+    var s = getStops(date);
+    var t = getTrucks();
+    return Promise.all([s, t]).then(([stops, trucks]) => {
+        for (var [i, stop] of stops.entries()) {
+            stop.trucks = stop.trucks.map(truck => {
+                var data = {
+                    name: truck,
+                    ...trucks[truck]
+                };
+                data.rating = data.rating || null;
+                return data;
+            })
+            stop[i] = stop;
+        }
+        return stops;
+    });
 }
 
 export {
     firebase,
-    getData,
-    processData
+    getData
 };

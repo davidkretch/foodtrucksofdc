@@ -8,7 +8,7 @@ import Sidebar from "./Sidebar";
 import "./App.css";
 
 import { dateKey } from "./date";
-import { firebase, getData, processData } from "./firebase";
+import { firebase, getData } from "./firebase";
 import { status, statusError } from "./status";
 
 
@@ -27,9 +27,11 @@ class App extends React.Component {
 
   fetch() {
     getData(dateKey(this.state.date))
-    .then(data => processData(data))
-    .then(data => this.setState({stops: data, status: status(data)}))
-    .catch(() => this.setState({status: statusError()}));
+    .then(stops => this.setState({stops: stops, status: status(stops)}))
+    .catch(err => {
+      this.setState({status: statusError()});
+      console.log(err);
+    });
   }
 
   componentDidMount() {
@@ -54,7 +56,7 @@ class App extends React.Component {
       />
       <Layout
         left={<Sidebar stops={this.state.stops} />}
-        middle={<Content stops={this.state.stops} status={this.state.status} />}
+        middle={<Content stops={this.state.stops} trucks={this.state.trucks} status={this.state.status} />}
       />
       </div>
       )
