@@ -11,7 +11,7 @@ function Truck(props) {
     <ListGroup.Item className="d-flex justify-content-between align-items-center">
       {props.truck.name}
       <Rating
-        rating={props.truck.rating}
+        rating={props.truck.avgRating}
         setRating={rating => {props.setRating(props.truck.name, rating)}}
         key={props.truck.name}
       />
