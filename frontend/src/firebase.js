@@ -58,7 +58,7 @@ function getTrucks() {
 }
 
 // getData returns all stops for a given day, with data about each truck
-// (e.g. rating) merged onto it.
+// (e.g. average rating) merged onto it.
 function getData(date) {
     var s = getStops(date);
     var t = getTrucks();
@@ -69,7 +69,7 @@ function getData(date) {
                     name: truck,
                     ...trucks[truck]
                 };
-                data.rating = data.rating || null;
+                data.avgRating = data.avgRating || null;
                 return data;
             })
             stop[i] = stop;
