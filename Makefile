@@ -12,20 +12,15 @@ else
 endif
 
 
-.PHONY: all backend frontend get_pdfs convert_pdfs load_db
+.PHONY: all backend frontend
 
 help:
 	@echo "  all               deploy the backend and frontend"
 	@echo "  backend           deploy the backend"
 	@echo "  frontend          deploy the frontend"
 	@echo "  test              run tests"
-	@echo "  get_pdfs          deploy DC gov PDF retrieval"
-	@echo "  convert_pdfs      deploy DC gov PDF conversion"
-	@echo "  load_db           deploy DC gov database load"
 
-all: backend frontend
-
-backend: get_pdfs convert_pdfs load_db
+all: frontend backend
 
 frontend:
 	@echo -e "\nDeploying the frontend"
@@ -33,20 +28,23 @@ frontend:
 	npm run build && \
 	firebase deploy
 
-buckets:
-	@echo -e "\nCreating buckets"
-	-${GSUTIL} mb gs://${BUCKET_CLOUD_FUNCTIONS}
-	-${GSUTIL} mb gs://${BUCKET_OBJECTS}
+backend: db dcgov
 
-get_pdfs_cron:
-	@echo -e "\nSetting up a schedule for PDF conversion"
-	-${SHELL} gcloud pubsub topics create get-pdfs
-	-${SHELL} gcloud scheduler jobs delete get-pdfs --quiet
-	-${SHELL} gcloud scheduler jobs create pubsub get-pdfs \
-	--schedule="0 * * * *" \
-	--topic=get-pdfs \
-	--message-body="{}" \
-	--time-zone=America/New_York
+db: db_rating
+
+dcgov: get_pdfs convert_pdfs load_db
+
+db_rating:
+	@echo -e "\nDeploying average ratings update"
+	export TRIGGER_EVENT=$$(cat backend/db/rating/trigger_event); \
+	export TRIGGER_RESOURCE=$$(cat backend/db/rating/trigger_resource); \
+	${SHELL} gcloud functions deploy set-avg-rating \
+	--entry-point=SetAvgRating \
+	--runtime=go111 \
+	--source=backend/db/rating \
+	--stage-bucket=${BUCKET_CLOUD_FUNCTIONS} \
+	--trigger-event=$${TRIGGER_EVENT} \
+	--trigger-resource=projects/${PROJECT}/databases/\(default\)/documents/$${TRIGGER_RESOURCE}
 
 get_pdfs: buckets get_pdfs_cron
 	@echo -e "\nDeploying DC gov PDF retrieval"
@@ -58,6 +56,16 @@ get_pdfs: buckets get_pdfs_cron
 	--timeout=300 \
 	--set-env-vars=URL=${DC_GOV_URL},BUCKET=${BUCKET_OBJECTS},PROJECT=${PROJECT} \
 	--trigger-topic=get-pdfs
+
+get_pdfs_cron:
+	@echo -e "\nSetting up a schedule for PDF conversion"
+	-${SHELL} gcloud pubsub topics create get-pdfs
+	-${SHELL} gcloud scheduler jobs delete get-pdfs --quiet
+	-${SHELL} gcloud scheduler jobs create pubsub get-pdfs \
+	--schedule="0 * * * *" \
+	--topic=get-pdfs \
+	--message-body="{}" \
+	--time-zone=America/New_York
 
 convert_pdfs: buckets
 	@echo -e "\nDeploying DC gov PDF to CSV conversion"
@@ -81,6 +89,11 @@ load_db: buckets
 	--set-env-vars=PROJECT=${PROJECT} \
 	--trigger-event=google.storage.object.finalize \
 	--trigger-resource=${BUCKET_OBJECTS}
+
+buckets:
+	@echo -e "\nCreating buckets"
+	-${GSUTIL} mb gs://${BUCKET_CLOUD_FUNCTIONS}
+	-${GSUTIL} mb gs://${BUCKET_OBJECTS}
 
 test:
 	@echo -e "\nRunning tests"
