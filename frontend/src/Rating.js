@@ -21,7 +21,7 @@ function ButtonStars(props) {
                 onMouseOver={props.onMouseOver.bind(this, i)}
                 onMouseOut={props.onMouseOut}
                 onClick={props.onClick.bind(this, i)}
-                style={{color: color}}
+                style={{color: color, cursor: "pointer"}}
             />
         );
     }
