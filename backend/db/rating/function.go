@@ -74,9 +74,11 @@ func init() {
 	}
 }
 
-// SetAvgRating updates a truck's average rating whenever a user
-// enters a new rating.
+// SetAvgRating updates a truck's average rating when a user enters a rating.
 func SetAvgRating(ctx context.Context, e FirestoreEvent) error {
+	if e.Value.Name == "" {
+		return nil
+	}
 	path := strings.Split(e.Value.Name, "/documents/")[1]
 	truckName := strings.Split(path, "/")[1]
 
