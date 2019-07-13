@@ -17,10 +17,10 @@ function linkName(name) {
     return shortName(name).replace(/[^0-9a-z ]/gi, '').toLowerCase().split(" ").join("-");
 }
 
-// getData returns a promise with the stop data for a given date.
+// getData returns a promise with the truck schedule for a given date.
 function getStops(date) {
     return firebase.firestore()
-    .collection("dates")
+    .collection("schedules")
     .doc(date)
     .get()
     .then(doc => {

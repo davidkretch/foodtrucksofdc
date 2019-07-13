@@ -143,13 +143,13 @@ func ProcessData(data []map[string]string, month time.Month, year int) (map[stri
 		}
 	}
 	start := time.Date(year, month, 1, 0, 0, 0, 0, time.UTC)
-	dates := make(map[string]map[string][]string)
+	schedules := make(map[string]map[string][]string)
 	for d := start; d.Month() == start.Month(); d = d.AddDate(0, 0, 1) {
 		date := d.Format("2006-01-02")
 		weekday := d.Weekday().String()
-		dates[date] = days[weekday]
+		schedules[date] = days[weekday]
 	}
-	return dates, nil
+	return schedules, nil
 }
 
 // UploadData uploads a dataset to the database,
@@ -162,9 +162,9 @@ func UploadData(data map[string]map[string][]string, project string, file string
 	}
 	defer client.Close()
 	batch := client.Batch()
-	dates := client.Collection("dates")
+	schedules := client.Collection("schedules")
 	for date, stops := range data {
-		dateRef := dates.Doc(date)
+		dateRef := schedules.Doc(date)
 		batch.Set(dateRef, stops)
 	}
 	_, err = batch.Commit(ctx)
