@@ -46,6 +46,12 @@ db_rating:
 	--trigger-event=$${TRIGGER_EVENT} \
 	--trigger-resource=projects/${PROJECT}/databases/\(default\)/documents/$${TRIGGER_RESOURCE}
 
+db_trucks:
+	@echo -e "\nUploading food truck data"
+	export PROJECT=${PROJECT}; \
+	cd backend/db/trucks && \
+	go run trucks.go
+
 get_pdfs: buckets get_pdfs_cron
 	@echo -e "\nDeploying DC gov PDF retrieval"
 	${SHELL} gcloud functions deploy get-pdfs \
