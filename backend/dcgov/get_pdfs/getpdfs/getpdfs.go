@@ -82,7 +82,7 @@ func GetAttribute(t html.Token, key string) (string, error) {
 			return attr.Val, nil
 		}
 	}
-	return "", errors.New("attribute not found")
+	return "", errors.New("Attribute not found")
 }
 
 // Filter returns an array of links where f(link) is true.
@@ -106,7 +106,7 @@ func AlreadyProcessed(name string, project string) (bool, error) {
 	}
 	defer client.Close()
 	fileNoExt := strings.TrimSuffix(name, path.Ext(name))
-	fileRef := client.Collection("dcgov_files").Doc(fileNoExt)
+	fileRef := client.Collection("dcGovFiles").Doc(fileNoExt)
 	snap, err := fileRef.Get(ctx)
 	if !snap.Exists() {
 		return false, nil
