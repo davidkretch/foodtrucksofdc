@@ -30,9 +30,7 @@ frontend:
 
 backend: db dcgov
 
-db: db_rating
-
-dcgov: get_pdfs convert_pdfs load_db
+db: db_rating db_trucks
 
 db_rating:
 	@echo -e "\nDeploying average ratings update"
@@ -51,6 +49,8 @@ db_trucks:
 	export PROJECT=${PROJECT}; \
 	cd backend/db/trucks && \
 	go run trucks.go
+
+dcgov: get_pdfs convert_pdfs load_db
 
 get_pdfs: buckets get_pdfs_cron
 	@echo -e "\nDeploying DC gov PDF retrieval"

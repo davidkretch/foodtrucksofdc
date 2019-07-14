@@ -254,7 +254,7 @@ func Upload(schedule MonthlySchedule, project string, file string) error {
 			data[stop] = []map[string]string{}
 			for _, truck := range trucks {
 				entry := map[string]string{
-					"id":     truckIDs[KeyName(truck)]
+					"id": truckIDs[KeyName(truck)],
 				}
 				data[stop] = append(data[stop], entry)
 			}
