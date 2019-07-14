@@ -12,7 +12,7 @@ function Truck(props) {
       {props.truck.name}
       <Rating
         rating={props.truck.avgRating}
-        setRating={rating => {props.setRating(props.truck.name, rating)}}
+        setRating={rating => {props.setRating(props.truck.id, rating)}}
         key={props.truck.name}
       />
     </ListGroup.Item>

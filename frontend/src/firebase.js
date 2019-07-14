@@ -66,6 +66,7 @@ function getData(date) {
         for (var [i, stop] of stops.entries()) {
             stop.trucks = Object.keys(stop.trucks).map(id => {
                 var data = {
+                    id: id,
                     name: trucks[id]['displayName'],
                     ...trucks[id]
                 };
@@ -81,11 +82,11 @@ function getData(date) {
 
 // setRating sets a user's rating for a specific truck. If the user has
 // already rated the truck before, their rating will be updated.
-function setRating(truck, rating) {
+function setRating(truckId, rating) {
     const userId = firebase.auth().currentUser.uid;
     return firebase.firestore()
     .collection("ratings")
-    .doc(truck)
+    .doc(truckId)
     .collection("ratings")
     .doc(userId)
     .set({
