@@ -249,14 +249,12 @@ func Upload(schedule MonthlySchedule, project string, file string) error {
 	batch := client.Batch()
 	for date, stops := range schedule.Days {
 		docRef := client.Collection("schedules").Doc(date)
-		data := make(map[string][]map[string]string)
+		data := make(map[string]map[string]map[string]bool)
 		for stop, trucks := range stops {
-			data[stop] = []map[string]string{}
+			data[stop] = map[string]map[string]bool{}
 			for _, truck := range trucks {
-				entry := map[string]string{
-					"id": truckIDs[KeyName(truck)],
-				}
-				data[stop] = append(data[stop], entry)
+				truckID := truckIDs[KeyName(truck)]
+				data[stop][truckID] = map[string]bool{}
 			}
 		}
 		batch.Set(docRef, data)
