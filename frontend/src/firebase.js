@@ -72,6 +72,7 @@ function getData(date) {
                 data.avgRating = data.avgRating || null;
                 return data;
             })
+            stop.trucks.sort((a, b) => a.name < b.name ? -1 : 0)
             stop[i] = stop;
         }
         return stops;
