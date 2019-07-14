@@ -64,10 +64,10 @@ function getData(date) {
     var t = getTrucks();
     return Promise.all([s, t]).then(([stops, trucks]) => {
         for (var [i, stop] of stops.entries()) {
-            stop.trucks = stop.trucks.map(truck => {
+            stop.trucks = Object.keys(stop.trucks).map(id => {
                 var data = {
-                    name: truck,
-                    ...trucks[truck]
+                    name: trucks[id]['displayName'],
+                    ...trucks[id]
                 };
                 data.avgRating = data.avgRating || null;
                 return data;
