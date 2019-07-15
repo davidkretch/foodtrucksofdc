@@ -4,20 +4,21 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 
+import constants from "./constants";
+const height = constants.display.heightNavbar;
+
 function Layout(props) {
+    const layoutStyle = {flex: 1, paddingTop: height+"px"};
     return (
-        <Container className="container-fluid m-0" style={{paddingTop: "56px"}}>
-          <Row>
-            <Col xs={12} sm={4} md={3} xl={2}>
-                {props.left}
-            </Col>
-            <Col xs={12} sm={8} md={6} xl={5}>
-                {props.middle}
-            </Col>
-            <Col xl={2}>
-                {props.right}
-            </Col>
-          </Row>
+        <Container className="container-fluid m-0" style={layoutStyle}>
+            <Row>
+                <Col {...constants.display.widthLeft}>
+                    {props.left}
+                </Col>
+                <Col {...constants.display.widthCenter}>
+                    {props.center}
+                </Col>
+            </Row>
         </Container>
     );
 }
