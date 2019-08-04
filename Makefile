@@ -101,5 +101,11 @@ buckets:
 	-${GSUTIL} mb gs://${BUCKET_CLOUD_FUNCTIONS}
 	-${GSUTIL} mb gs://${BUCKET_OBJECTS}
 
-test:
-	@echo -e "\nRunning tests"
+test: test-backend test-frontend
+	
+test-backend:
+	@GO_DIRS=$$(find . -name *test.go -exec dirname {} \; | sort | uniq); \
+	for d in $$GO_DIRS; do (cd "$$d" && go test); done; \
+
+test-frontend:
+	@cd frontend && CI=true npm test a
