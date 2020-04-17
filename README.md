@@ -14,7 +14,7 @@ The frontend requires a Firebase config in `frontend/src/firebaseConfig.js`.
 You can download the file in the Firebase console under Project settings -> 
 section Firebase SDK snippet -> option Config.
 
-It should look like the this. It must end with `export default firebaseConfg`.
+It should look like this. It must end with `export default firebaseConfg`.
 
 ```
 const firebaseConfig = {
