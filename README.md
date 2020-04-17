@@ -11,6 +11,23 @@ to draw the page based on the fetched data.
 ### Firebase credentials
 
 The frontend requires a Firebase config in `frontend/src/firebaseConfig.js`.
+You can download the file in the Firebase console under Project settings -> 
+section Firebase SDK snippet -> option Config.
+
+It should look like the this. It must end with `export default firebaseConfg`.
+
+```
+const firebaseConfig = {
+  apiKey: "foobar",
+  authDomain: "foo.firebaseapp.com",
+  databaseURL: "https://foo.firebaseio.com",
+  projectId: "foo",
+  storageBucket: "foo.appspot.com",
+  messagingSenderId: "123",
+  appId: "123"
+};
+export default firebaseConfig;
+```
 
 ### Credential API requirements
 
